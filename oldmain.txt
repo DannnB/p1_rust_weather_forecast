@@ -1,0 +1,163 @@
+// use std::env;
+mod custom_error;
+// mod requests;
+// use mod customerror;
+// use std::{env, path::PathBuf};
+use reqwest;
+use serde::Deserialize;
+// use serde_json::Value;
+//use std::time::SystemTime;
+// TODO use clap for CLI
+
+// #[derive(Deserialize, Debug)]
+// struct WeatherForecast {
+//     location: String,
+//     date: String,
+//     temperature: f32,
+//     weather_description: String,
+//     weather_icon: PathBuf,
+// }
+
+#[derive(Deserialize, Debug)]
+pub struct Location {
+    name: String
+}
+#[derive(Deserialize, Debug)]
+pub struct Weather {
+    temperature: String
+}
+#[derive(Deserialize, Debug)]
+pub struct WeatherResponse {
+    location: String,
+    current: String
+}
+
+
+// #[derive(Deserialize, Debug)]
+// pub struct Todo {
+//     option_id: i32,
+//     option_id_unique: String,
+//     option_name: String,
+//     option_description: String,
+//     options_translation_name: String,
+//     option_translation_description: String,
+//     region_code: String,
+//     currency_code: String,
+//     price: i32,
+//     category_name: String,
+// }
+// #[derive(Deserialize, Debug)]
+// pub struct Todo {
+//     userId: i32,
+//     id: i32,
+//     title: String,
+//     completed: bool,
+// }
+fn main() {
+    println!("This is the Weather Forecast CLI");
+    // let url: &str = "https://jsonplaceholder.typicode.com/todos";
+    // let api_key = "27bab6d33e7f965127fd1c2ceeb01741";
+    let url: &str = "http://api.weatherstack.com/current?access_key=27bab6d33e7f965127fd1c2ceeb01741&query=Worcester UK";
+    // let url: &str = "https://api.morgan-motor.com/v1/config/options?model_id=5&lang=en&region=gb&option_id=PS009";
+    
+    // let args: Vec<String> = env::args().collect();
+
+    // if args.len() < 2 {
+    //     println!("Please provide a location");
+    //     eprintln!("Usage: {} <location>", args[0]);
+    //     return;
+    // }
+
+    // need error checking incase args are empty
+    // println!("Path is {}.", args[0]);
+    // get args, location*, date
+    // $ ./args location date
+    // println!("Location is {}.", args[1]);
+    // println!("Date is {}.", args[2]);
+
+    // match fetch_todos(url) {
+    //     Ok(todos) => {
+    //         for todo in todos {
+    //             println!("{:?}", todo);
+    //         }
+    //     }
+    //     Err(e) => eprintln!("Failed to fetch todos: {}", e),
+    
+    // }
+    match fetch_weather(url) {
+        Ok(current_weather) => {
+            println!("Current Weather:");
+            println!("{:?}", current_weather);
+            // for todo in todos {
+            //     println!("{:?}", todo);
+            // }
+        }
+        Err(e) => eprintln!("Failed to fetch weather: {}", e),
+    
+    }
+
+    // let mut x: i32 = 5;
+    // let y: &mut i32 = &mut x;
+    // *y += 1;
+    // println!("x = {}", x);
+
+    // println!("I got {:?} arguments: {:?}.", args.len() - 1, &args[1..]);
+    
+    // location, todays date
+    // get_weather_forecast(todos_url).unwrap(); // Handle errors properly in a real application.
+    //  match get_weather_forecast(todos_url) {
+    //     Ok(()) => println!("Weather forecast retrieved successfully."),
+    //     Err(e) => eprintln!("Failed to get weather forecast: {}", e),
+    // }
+}
+
+pub fn fetch_weather(url: &str) -> Result<Vec<Weather>, custom_error::CustomError> {
+    let response: String = reqwest::blocking::get(url)?.text()?;
+    // let response_json: String = reqwest::blocking::get(url)?;
+    // let response_json: WeatherResponse = serde_json::from_str(&response)?;
+
+    // println!("Response: {:?}", response);
+    
+    let current_weather: Vec<Weather> = serde_json::from_str(&response)?;
+
+    Ok(current_weather)
+}
+// pub fn fetch_todos(url: &str) -> Result<Vec<Todo>, custom_error::CustomError> {
+//     let response = reqwest::blocking::get(url)?.text()?;
+//     let todos: Vec<Todo> = serde_json::from_str(&response)?;
+//     Ok(todos)
+// }
+
+// async fn get_weather_forecast(url: &str) -> Result<(), ureq::Error> {
+//     // Making HTTP requests to the chosen weather API.
+//     // Parsing the API's JSON response.
+//     // Handling errors that may occur during HTTP requests or JSON parsing.
+//     println!("Getting weather");
+    
+//     let response: String = ureq::get(url).call()?.into_string()?;
+
+//     // Debug print the raw response
+//     println!("Response: {}", response);
+
+//     // println!("{:?}", response);
+
+//     if let Ok(weather_forecast) = serde_json::from_str::<WeatherForecast>(&response) {
+//         println!("{:?}", weather_forecast);
+//     } else {
+//         println!("Failed to parse JSON. Response was: {}", response);
+//     }
+
+//     // if response.status().is_success() {
+//     //     let weather_forecast: WeatherForecast = response.json().await?;
+//     //     println!("{:?}", weather_forecast);
+//     // } else {
+//     //     eprintln!("Failed to get the weather;");
+//     // }
+//     Ok(())
+// }
+
+fn display_weather_forecast() {
+    // Displaying the weather forecast to the user.
+    // Formatting and displaying the weather data in the terminal.
+    println!("Displaying weather");
+}
